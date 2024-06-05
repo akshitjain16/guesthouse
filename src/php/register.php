@@ -1,6 +1,7 @@
 <?php
 include '../../config/config.php';
 
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST['username'];
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
@@ -29,7 +30,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             echo "Registration successfull!";
 
             $stmt->close();
-
         } else {
             echo "Error: " . $stmt->error;
         }
@@ -48,41 +48,38 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" href="../style/register.css">
 </head>
 
-<body>
-    <div class="container">
-        <form method="POST">
-            <h2 style="text-align: center;">Registration Page</h2>
-            <div class="input-group">
-                <select name="role">
-                    <option value="employee">Employee</option>
-                    <option value="admin">Admin</option>
-                </select>
-            </div>
-            <div class="input-group">
-                <input type="text" name="name" required placeholder="Employee Name">
-            </div>
-            <div class="input-group">
-                <input type="number" name="emp_id" required placeholder="Employee Id">
-            </div>
-            <div class="input-group">
-                <input type="text" name="username" required placeholder="Username">
-            </div>
-            <div class="input-group">
-                <input type="text" name="depname" required placeholder="Department Name">
-            </div>
-            <div class="input-group">
-                <input type="email" name="email" required placeholder="Email">
-            </div>
-            <div class="input-group">
-                <input type="number" name="phone_number" required placeholder="Phone No.">
-            </div>
-            <div class="input-group">
-                <input type="password" name="password" required placeholder="Password">
-            </div>
+<body class='reg-body'>
+    <div class="reg-nav"><?php include './navbar.php'; ?></div>
+    <div class="reg-container">
+        <div id="background"></div>
+        <div class="reg-form">
+            <h2>Registration Page</h2>
+            <form method="POST">
+                <div class="input-group">
+                    <input type="text" name="name" required placeholder="Employee Name">
+                </div>
+                <div class="input-group">
+                    <input type="number" name="emp_id" required placeholder="Employee Id">
+                </div>
+                <div class="input-group">
+                    <input type="text" name="username" required placeholder="Username">
+                </div>
+                <div class="input-group">
+                    <input type="text" name="depname" required placeholder="Department Name">
+                </div>
+                <div class="input-group">
+                    <input type="email" name="email" required placeholder="Email">
+                </div>
+                <div class="input-group">
+                    <input type="number" name="phone_number" required placeholder="Phone No.">
+                </div>
+                <div class="input-group">
+                    <input type="password" name="password" required placeholder="Password">
+                </div>
 
-            <button type="submit">Register</button>
-        </form>
-    </div>
+                <button type="submit">Register</button>
+            </form>
+        </div>
 </body>
 
 </html>

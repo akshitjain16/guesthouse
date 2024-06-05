@@ -12,7 +12,7 @@
         <div class="row">
             <?php
             session_start();
-            include('config.php');
+            include '../../config/config.php';
 
             if ($_SESSION['role'] != 'employee') {
                 header("Location: dashboard.php");

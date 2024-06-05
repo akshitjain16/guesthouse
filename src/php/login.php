@@ -1,7 +1,7 @@
 <?php
 session_start();
 include '../../config/config.php';
-include 'navbar.php';
+
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST['username'];
@@ -36,27 +36,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../style/login.css">
 </head>
 
-<body>
+<body class="log-body">
+<div class="navbar-login"><?php include 'navbar.php'; ?></div>
     <div class="container">
-        <h1 class="mt-5">Login</h1>
-        <form method="post">
-            <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" name="username" class="form-control" required>
-            </div>
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" name="password" class="form-control" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Login</button>
-        </form>
-        <p class="mt-3">
-            <a href="forgot_password.php">Forgot Password?</a>
-        </p>
+        <div id="background"></div>
+        <div class="login-form">
+            <h2>Login</h2>
+            <form>
+                <div class="input-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit" >Login</button>
+                <p class="mt-10">
+                    <a href="forgot_password.php">Forgot Password?</a>
+                </p>
+            </form>
+        </div>
     </div>
 </body>
 
