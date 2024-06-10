@@ -1,4 +1,4 @@
-body.n-body {
+.n-body {
     margin: 0;
     padding: 0;
     font-family: Arial, sans-serif;
@@ -42,28 +42,22 @@ body.n-body {
     font-weight: bolder;
 }
 
-@media (max-width: 550px) {
-    .navbar-body {
-        flex-direction: column;
-        align-items: flex-start;
+@media (max-width: 600px) {
+    .logo {
+        height: 10px;
     }
-
-    .navbar-navv {
-        flex-direction: column;
-        width: 100%;
-    }
-
+    
     .nav-items {
-        width: 100%;
         text-align: left;
-        margin: 10px 0;
+        margin: 0px 10px;
+        font-size: smaller;
     }
+}
 
-    .nav-links {
-        display: block;
-        width: 100%;
-        padding: 10px 0;
-        border-top: 1px solid #333;
-        border-bottom: 1px solid #333;
+@media (max-width:340px){
+    .nav-items {
+        text-align: left;
+        margin: 0px 8px;
+        font-size: xx-small;
     }
 }

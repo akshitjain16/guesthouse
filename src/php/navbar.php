@@ -22,7 +22,7 @@
                 <a class="nav-links " href="./register.php">Register</a>
             </li>
             <li class="nav-items">
-                <a class="nav-links " href="./contact.php">Contact us</a>
+                <a class="nav-links " href="./contact.php">Contact</a>
             </li>
         </ul>
     </nav>

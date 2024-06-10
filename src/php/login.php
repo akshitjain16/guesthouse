@@ -7,7 +7,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-    $sql = "SELECT id, username, password, role FROM users WHERE username = ?";
+    $sql = "SELECT emp_id, username, password, role FROM users WHERE username = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("s", $username);
     $stmt->execute();
@@ -16,7 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($result->num_rows == 1) {
         $user = $result->fetch_assoc();
         if (password_verify($password, $user['password'])) {
-            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['user_id'] = $user['emp_id'];
             $_SESSION['username'] = $user['username'];
             $_SESSION['role'] = $user['role'];
             header("Location: dashboard.php");
@@ -40,12 +40,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 
 <body class="log-body">
-<div class="navbar-login"><?php include 'navbar.php'; ?></div>
-    <div class="container">
-        <div id="background"></div>
+    <div class="log-container">
+    <div class="navbar-login"><?php include 'navbar.php'; ?></div>
         <div class="login-form">
             <h2>Login</h2>
-            <form>
+            <form method="post">
                 <div class="input-group">
                     <label for="username">Username</label>
                     <input type="text" id="username" name="username" required>
@@ -55,9 +54,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <input type="password" id="password" name="password" required>
                 </div>
                 <button type="submit" >Login</button>
-                <p class="mt-10">
-                    <a href="forgot_password.php">Forgot Password?</a>
+                <p style="margin-top: 30px;">
+                    <a href="forgot_password.php" style="text-decoration: none ">Forgot Password?</a>
                 </p>
+                
             </form>
         </div>
     </div>

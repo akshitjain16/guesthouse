@@ -3,12 +3,14 @@ include '../../config/config.php';
 
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $emp_id = $_POST['emp_id'];
     $username = $_POST['username'];
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
     $name = $_POST['name'];
-    $role = $_POST['role'];
+    $role = "employee";
     $email = $_POST['email'];
     $phone_number = $_POST['phone_number'];
+    $department_name = $_POST['depname'];
 
     // Check if the username already exists
     $sql = "SELECT * FROM users WHERE username = ?";
@@ -22,9 +24,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $error_message = "Username already taken. Please choose another.";
     } else {
         // Username is available, proceed with registration
-        $sql = "INSERT INTO users (username, password, name, role, email, phone_number) VALUES (?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO users (emp_id, username, password, name, role, email, phone_number ,department_name) VALUES (?, ?, ?, ?, ?, ?,?, ?)";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("ssssss", $username, $password, $name, $role, $email, $phone_number);
+        $stmt->bind_param("ssssssss", $emp_id, $username, $password, $name, $role, $email, $phone_number, $department_name);
 
         if ($stmt->execute()) {
             echo "Registration successfull!";
@@ -49,12 +51,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 
 <body class='reg-body'>
-    <div class="reg-nav"><?php include './navbar.php'; ?></div>
+<div class="reg-nav"><?php include './navbar.php'; ?></div>
     <div class="reg-container">
-        <div id="background"></div>
         <div class="reg-form">
             <h2>Registration Page</h2>
-            <form method="POST">
+            <form method="post">
                 <div class="input-group">
                     <input type="text" name="name" required placeholder="Employee Name">
                 </div>

@@ -9,8 +9,9 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
 }
 
 // Fetch all users from the database
-$sql = "SELECT id, username, name, role FROM users";
-$result = $conn->query($sql);
+// $sql = "SELECT * FROM users";
+// $result = $conn->query($sql);
+$result = mysqli_query($conn, "select * from users");
 ?>
 
 <!DOCTYPE html>
@@ -37,7 +38,7 @@ $result = $conn->query($sql);
                 <?php if ($result->num_rows > 0): ?>
                     <?php while ($row = $result->fetch_assoc()): ?>
                         <tr>
-                            <td><?php echo htmlspecialchars($row['id']); ?></td>
+                            <td><?php echo htmlspecialchars($row['emp_id']); ?></td>
                             <td><?php echo htmlspecialchars($row['username']); ?></td>
                             <td><?php echo htmlspecialchars($row['name']); ?></td>
                             <td><?php echo htmlspecialchars($row['role']); ?></td>

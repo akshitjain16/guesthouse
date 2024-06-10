@@ -9,100 +9,81 @@
 }
 
 
-.reg-container {
+.reg-form {
+    position: absolute;
+    z-index: 1;
     background: rgba(0, 0, 0, 0.8);
-    padding: 30px;
+    padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-    width: 50%;
-    max-width: 500px;
-    margin-top: 15px;
-    position: absolute;
-    left: 50%;
-    transform: translate(-50%);
-}
-
-#background {
-    position: absolute;
-    top: 0;
-    left: 0;
     width: 100%;
-    height: 100%;
-    z-index: 0;
+    max-width: 500px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    margin-top: 10px;
 }
 
-form {
-    display: flex;
-    flex-direction: column;
-}
-
-h2 {
+.reg-form h2 {
     margin-bottom: 20px;
     text-align: center;
-    color: #333;
+    color: white;
 }
 
 .input-group {
-    position: relative;
     margin-bottom: 20px;
-    height: 40px;
-    margin-right: 20px;
 }
 
 .input-group input {
-    width: 100%;
-    padding: 10px 10px 10px 0;
-    background: none;
-    border: 2px solid #ccc;
-    border-radius: 20px;
+   display: block;
+   margin: auto;
+    width: 90%;
     padding: 10px;
-    outline: none;
-    transition: border-color 0.2s;
-    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    -moz-appearance: textfield;
 }
 
 .input-group input:focus {
     border-color: #007bff;
 }
 
-.input-group label {
-    position: absolute;
-    top: 10px;
-    left: 0;
-    font-size: 16px;
-    color: #999;
-    transition: all 0.2s;
-    pointer-events: none;
-}
-
-.input-group input:focus+label,
-.input-group input:valid+label {
+.input-group input:focus,
+.input-group input:valid {
     top: -20px;
     font-size: 12px;
-    color: #007bff;
+    color: black;
+}
+a{
+    text-decoration: none;
 }
 
 button {
+    display: block;
+    margin: auto;
+    width: 95%;
     padding: 10px;
-    background: #007bff;
+    background-color: #00bcd4;
     color: #fff;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     font-size: 16px;
     transition: background-color 0.3s;
+    margin-bottom: 30px;
 }
 
 button:hover {
     background: #0056b3;
 }
 
-@media screen and (max-width: 500px) {
-    .container {
-        padding: 20px;
+@media screen and (max-width: 600px) {
+    .reg-form{
+        width: 80%;
+        padding: 15px;
     }
 
-    .input-group {
-        margin-bottom: 20px;
+    button {
+        font-size: 12px;
     }
 }
