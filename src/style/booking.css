@@ -1,0 +1,95 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    background-color: #f0f0f0;
+}
+
+.container {
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    width: 80%;
+    max-width: 1200px;
+    padding: 20px; /* Add padding around the container */
+}
+
+.left-panel, .right-panel {
+    margin: 10px;
+    padding: 20px;
+    flex: 1; /* Panels will take up equal space by default */
+    min-width: 300px; /* Ensure panels do not get too small on narrow screens */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+.left-panel {
+    background-color: #f8f8f8;
+    border-right: 1px solid #ddd;
+}
+
+.right-panel {
+    background-color: #f8f8f8;
+}
+
+h2 {
+    margin-top: 0;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+   
+}
+
+label {
+    margin-top: 10px;
+}
+
+input, select, button {
+    margin-top: 5px;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+button {
+    background-color: #0056b3;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #032142;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        width: 90%;
+    }
+
+    .left-panel, .right-panel {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .left-panel {
+        border-bottom: 1px solid #ddd;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        width: 100%;
+        padding: 10px; 
+    }
+
+    input, select, button {
+        width: 100%;
+    }
+}
