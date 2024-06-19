@@ -1,5 +1,4 @@
 <?php
-session_start();
 include '../../config/config.php';
 
 // Check if the user is logged in and is an admin
@@ -8,38 +7,75 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     exit();
 }
 
+// Get the admin's guesthouse_id from the session
+$guesthouse_id = $_SESSION['guesthouse'];
+$background_class = '';
+if ($guesthouse_id == 1) {
+    $background_class = 'satkar-background';
+} elseif ($guesthouse_id == 2) {
+    $background_class = 'swagat-background';
+}
+
 // Fetch employees for the dropdown
-$employees_query = $conn->query("SELECT emp_id, name FROM users WHERE role='employee'");
+$employees_query = $conn->query("SELECT emp_id, name FROM users WHERE role='employee' AND guesthouse_id = '$guesthouse_id'");
 $employees = $employees_query->fetch_all(MYSQLI_ASSOC);
 
 // Fetch meal bookings based on filters
 $date_filter = isset($_GET['date']) ? $_GET['date'] : date('Y-m-d');
 $meal_type_filter = isset($_GET['meal_type']) ? $_GET['meal_type'] : '';
+$emp_id_filter = isset($_GET['emp_id']) ? $_GET['emp_id'] : '';
 
-$sql = "SELECT mb.user_id, u.name, mb.meal_date, mb.meal_type FROM meal_bookings mb 
-        JOIN users u ON mb.user_id = u.emp_id WHERE mb.meal_date = '$date_filter'";
+// Prepare the base SQL query
+$sql = "SELECT mb.user_id, u.name, mb.meal_date, mb.meal_type 
+        FROM meal_bookings mb 
+        JOIN users u ON mb.user_id = u.emp_id 
+        WHERE mb.meal_date = ? AND mb.guesthouse_id = ?";
 
+// Append meal type filter if selected
 if ($meal_type_filter) {
-    $sql .= " AND mb.meal_type = '$meal_type_filter'";
+    $sql .= " AND mb.meal_type = ?";
 }
 
-$bookings_query = $conn->query($sql);
-$bookings = $bookings_query->fetch_all(MYSQLI_ASSOC);
+// Append employee filter if selected
+if ($emp_id_filter) {
+    $sql .= " AND mb.user_id = ?";
+}
+
+$stmt = $conn->prepare($sql);
+
+if ($meal_type_filter && $emp_id_filter) {
+    $stmt->bind_param('sssi', $date_filter, $guesthouse_id, $meal_type_filter, $emp_id_filter);
+} elseif ($meal_type_filter) {
+    $stmt->bind_param('sss', $date_filter, $guesthouse_id, $meal_type_filter);
+} elseif ($emp_id_filter) {
+    $stmt->bind_param('ssi', $date_filter, $guesthouse_id, $emp_id_filter);
+} else {
+    $stmt->bind_param('ss', $date_filter, $guesthouse_id);
+}
+
+// Execute the query
+$stmt->execute();
+$result = $stmt->get_result();
+$bookings = $result->fetch_all(MYSQLI_ASSOC);
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>view bookings</title>
+    <title>Bookings</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="./background.css">
 </head>
-<body>
+<body class="<?php echo $background_class; ?>">
+<div><?php include 'navbar.php'; ?></div>
     <div class="container">
         <h1 class="mt-5">Manage Meals</h1>
-        <form class="form-inline mb-4">
-            <div class="form-group mr-2">
+        <form class="form-inline mb-4" method="GET" action="">
+            <input type="hidden" name="emp_id" value="<?php echo htmlspecialchars($emp_id_filter); ?>">
+            <div class="form-group mr-4">
                 <label for="date" class="mr-2">Date:</label>
                 <input type="date" class="form-control" id="date" name="date" value="<?php echo $date_filter; ?>">
             </div>
@@ -52,10 +88,12 @@ $bookings = $bookings_query->fetch_all(MYSQLI_ASSOC);
                     <option value="dinner" <?php echo $meal_type_filter == 'dinner' ? 'selected' : ''; ?>>Dinner</option>
                 </select>
             </div>
-            <button type="submit" class="btn btn-primary">Filter</button>
+            <div class="form-group col-md-3 align-self-end">
+                <button type="submit" class="btn btn-primary">Filter</button>
+            </div>
         </form>
 
-        <h2>Total Bookings for <?php echo $date_filter; ?>: <?php echo count($bookings); ?></h2>
+        <h2 class="mt-5">Total Bookings for <?php echo htmlspecialchars($date_filter); ?>: <?php echo count($bookings); ?></h2>
 
         <table class="table table-striped mt-3">
             <thead>
@@ -84,30 +122,7 @@ $bookings = $bookings_query->fetch_all(MYSQLI_ASSOC);
             </tbody>
         </table>
 
-        <!-- <h2 class="mt-5">Add Meal Booking</h2>
-        <form action="add_booking.php" method="POST">
-            <div class="form-group">
-                <label for="employee_id">Select Employee</label>
-                <select class="form-control" id="employee_id" name="employee_id" required>
-                    <?php foreach ($employees as $employee): ?>
-                        <option value="<?php echo htmlspecialchars($employee['emp_id']); ?>"><?php echo htmlspecialchars($employee['name']); ?></option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="meal_date">Select Date</label>
-                <input type="date" class="form-control" id="meal_date" name="meal_date" required>
-            </div>
-            <div class="form-group">
-                <label for="meal_type">Select Meal Type</label>
-                <select class="form-control" id="meal_type" name="meal_type" required>
-                    <option value="breakfast">Breakfast</option>
-                    <option value="lunch">Lunch</option>
-                    <option value="dinner">Dinner</option>
-                </select>
-            </div>
-            <button type="submit" class="btn btn-primary">Add Booking</button>
-        </form> -->
+        <a href="dashboard.php" class="btn btn-secondary mt-3">Back to Dashboard</a>
     </div>
 </body>
 </html>

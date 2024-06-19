@@ -1,5 +1,4 @@
 <?php
-session_start();
 include '../../config/config.php';
 
 // Check if the user is logged in
@@ -46,7 +45,13 @@ $user = $result->fetch_assoc();
             <tr>
                 <th>Phone Number</th>
                 <td><?php echo htmlspecialchars($user['phone_number']); ?></td>
-            </tr>
+            <!-- </tr>
+            <tr>
+                <th>Total Payment</th>
+                <td>
+                    <?php echo htmlspecialchars($user['total_payment']); ?>
+                </td>
+            </tr> -->
         </table>
         <a href="dashboard.php" class="btn btn-secondary mt-3">Back to Dashboard</a>
     </div>

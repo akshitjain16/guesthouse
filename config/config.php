@@ -1,4 +1,6 @@
-<?php
+<?php 
+session_start();
+ob_start();
 $servername = "localhost";
 $username = "root";
 $password = "";

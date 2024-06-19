@@ -1,5 +1,4 @@
 <?php
-session_start();
 include '../../config/config.php';
 // require '../../vendor/autoload.php';  // Assuming you use Composer to install PHPMailer and Twilio
 

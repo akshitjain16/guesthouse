@@ -1,8 +1,3 @@
-<?php
-include 'navbar.php';
-?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -37,6 +32,7 @@ include 'navbar.php';
     </style>
 </head>
 <body>
+<div><?php include 'navbar.php'; ?></div>
     <div class="background">
         <div class="welcome-text">
             Welcome to Shree Guest House
