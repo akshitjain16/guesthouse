@@ -15,7 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login'])) {
     $emp_id = $_POST['emp_id'];
     $password = $_POST['password'];
 
-    $sql = "SELECT emp_id, password, role, name , Department_name, phone_number, guesthouse_id FROM users WHERE emp_id = ?";
+    $sql = "SELECT emp_id, password, role, name , Department_name, phone_number, guesthouse_id, status FROM users WHERE emp_id = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $emp_id);
     $stmt->execute();
@@ -23,23 +23,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login'])) {
 
     if ($result->num_rows == 1) {
         $user = $result->fetch_assoc();
-        if (password_verify($password, $user['password'])) {
-            $_SESSION['user_id'] = $user['emp_id'];
-            $_SESSION['role'] = $user['role'];
-            $_SESSION['name'] = $user['name'];
-            $_SESSION['department'] = $user['Department_name'];
-            $_SESSION['contact'] = $user['phone_number'];
-            $_SESSION['message'] = "Login successfull!";
-            $_SESSION['message_type'] = "success";
-            if ($_SESSION['role'] === 'employee') {
-                header("Location: dashboard.php");
-            } elseif ($user['role'] === 'admin') {
-                $_SESSION['guesthouse'] = $user['guesthouse_id'];
-                header("Location: adminPanel.php");
-            }
-        } else {
-            $_SESSION['message'] = "Invalid User ID or Password.";
+        if ($user['status'] == 'false') {
+            $_SESSION['message'] = "Your account has been deactivated. Please contact the administrator.";
             $_SESSION['message_type'] = "danger";
+            header("Location: login.php");
+            exit();
+        } else {
+            if (password_verify($password, $user['password'])) {
+                $_SESSION['user_id'] = $user['emp_id'];
+                $_SESSION['role'] = $user['role'];
+                $_SESSION['name'] = $user['name'];
+                $_SESSION['department'] = $user['Department_name'];
+                $_SESSION['contact'] = $user['phone_number'];
+                $_SESSION['message'] = "Login successfull!";
+                $_SESSION['message_type'] = "success";
+                if ($_SESSION['role'] === 'employee') {
+                    header("Location: dashboard.php");
+                } elseif ($user['role'] === 'admin') {
+                    $_SESSION['guesthouse'] = $user['guesthouse_id'];
+                    header("Location: adminPanel.php");
+                }
+            } else {
+                $_SESSION['message'] = "Invalid User ID or Password.";
+                $_SESSION['message_type'] = "danger";
+            }
         }
     } else {
         $_SESSION['message'] = "No User Found.";
