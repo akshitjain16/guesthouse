@@ -159,7 +159,7 @@ unset($_SESSION['success']);
             </tbody>
         </table>
 
-        <a href="adminPanel.php" class="btn btn-secondary mt-3">Back to Dashboard</a>
+        <a href="adminPanel.php" class="btn btn-secondary mt-3 mb-3">Back to Dashboard</a>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>

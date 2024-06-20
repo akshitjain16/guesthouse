@@ -1,13 +1,14 @@
 <?php
 include '../../config/config.php';
-// require '../../vendor/autoload.php';  // Assuming you use Composer to install PHPMailer and Twilio
+require '../../vendor/autoload.php';  // Assuming you use Composer to install PHPMailer and Twilio
 
-// use PHPMailer\PHPMailer\PHPMailer;
-// use PHPMailer\PHPMailer\Exception;
-// use Twilio\Rest\Client;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+use Twilio\Rest\Client;
 
 // Check if the user is logged in as an employee
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'employee') {
+if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit();
 }
@@ -50,22 +51,21 @@ $phone = $user['phone_number'];
 //     echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
 // }
 
-// // Send SMS confirmation using Twilio
-// $sid = 'your_twilio_sid';
-// $token = 'your_twilio_token';
-// $twilio = new Client($sid, $token);
+// Send SMS confirmation using Twilio
+$sid = 'your_twilio_sid';
+$token = 'your_twilio_token';
+$twilio = new Client($sid, $token);
 
-// $message_body = "Your meal bookings have been confirmed for the following dates and meal types:\n";
-// foreach ($period as $date) {
-//     $meal_date = $date->format('Y-m-d');
-//     $message_body .= "$meal_date: " . implode(", ", $meal_types) . "\n";
-// }
+$message_body = "Your meal bookings have been confirmed for the following dates and meal types:\n";
+foreach ($period as $date) {
+    $meal_date = $date->format('Y-m-d');
+    $message_body .= "$meal_date: " . implode(", ", $meal_types) . "\n";
+}
 
-// $message = $twilio->messages
-//                   ->create($phone, // to
-//                            ["from" => "+1234567890", // from a valid Twilio number
-//                             "body" => $message_body]);
+$message = $twilio->messages
+                  ->create($phone, // to
+                           ["from" => "+1234567890", // from a valid Twilio number
+                            "body" => $message_body]);
 
-header("Location: booking_confirmation.php");
 exit();
 ?>

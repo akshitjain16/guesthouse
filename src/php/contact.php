@@ -92,7 +92,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 <label for="message">Message</label>
                                 <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
                             </div>
-                            
                             <button type="submit" class="btn btn-primary">Send Message</button>
                         </form>
                     </div>
@@ -101,6 +100,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </div>
     </div>
     </div>
+    
 </body>
+<?php include'footer.php'; ?>
 
 </html>

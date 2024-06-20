@@ -84,9 +84,16 @@ $result = $stmt->get_result();
 <div><?php include 'navbar.php'; ?></div>
     <div class="container">
         <h1 class="mt-5">Manage Users</h1>
-        <form method="GET" action="manage_users.php" class="form-inline mb-3">
+       
+        <form method="GET" action="manage_users.php">
+            <div class="form-row">
+            <div class="form-group col-md-3">
             <input type="text" name="search_emp_id" class="form-control mr-2" placeholder="Enter Employee Code" value="<?php echo htmlspecialchars($search_emp_id); ?>">
+            </div>
+            <div class="form-group col-md-3 align-self-end">
             <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+            </div>
         </form>
         <table class="table table-striped mt-3">
             <thead>
