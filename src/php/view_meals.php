@@ -2,7 +2,7 @@
 include '../../config/config.php';
 
 // Check if the user is logged in
-if (!isset($_SESSION['user_id'])) {
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'employee') {
     header("Location: login.php");
     exit();
 }
@@ -13,10 +13,14 @@ $to_date = isset($_GET['to_date']) ? $_GET['to_date'] : '';
 $meal_type_filter = isset($_GET['meal_type']) ? $_GET['meal_type'] : '';
 $guesthouse_filter = isset($_GET['guesthouse_id']) ? $_GET['guesthouse_id'] : '';
 
-// Fetch the user's total meal history and total price
-$sql_total = "SELECT price FROM meal_bookings WHERE user_id = ?";
+// Get the current month
+$current_month_start = date("Y-m-01");
+$current_month_end = date("Y-m-t");
+
+// Fetch the user's total meal history and total price for the current month
+$sql_total = "SELECT price FROM meal_bookings WHERE user_id = ? AND meal_date BETWEEN ? AND ?";
 $stmt_total = $conn->prepare($sql_total);
-$stmt_total->bind_param("i", $user_id);
+$stmt_total->bind_param("iss", $user_id, $current_month_start, $current_month_end);
 $stmt_total->execute();
 $result_total = $stmt_total->get_result();
 
@@ -44,6 +48,12 @@ if ($from_date && $to_date) {
     $sql_filtered .= " AND meal_date <= ?";
     $params[] = $to_date;
     $types .= "s";
+} else {
+    // Default to showing current month's bookings
+    $sql_filtered .= " AND meal_date BETWEEN ? AND ?";
+    $params[] = $current_month_start;
+    $params[] = $current_month_end;
+    $types .= "ss";
 }
 
 if ($meal_type_filter && $meal_type_filter !== 'all') {
@@ -75,6 +85,7 @@ while ($row_filtered = $result_filtered->fetch_assoc()) {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -93,12 +104,13 @@ while ($row_filtered = $result_filtered->fetch_assoc()) {
 </head>
 
 <body style="background-color:#DCDEDF">
-<div><?php include 'navbar.php'; ?></div>
+    <div><?php include 'navbar.php'; ?></div>
     <div class="container">
         <h1 class="mt-5 ">Your Meal History</h1>
-        <h3 class="mt-4">Total Payment: $<?php echo number_format($total_price, 2); ?></h3>
-        <h3>Filtered Payment: $<?php echo number_format($filtered_price, 2); ?></h3>
-        <button class="btn btn-primary mt-3 " onclick="toggleTable()">Show History</button>
+        <h3 class="mt-4 total-payment">Total Charges for Current Month: $<?php echo number_format($total_price, 2); ?></h3>
+        <?php if ($from_date || $to_date || $meal_type_filter || $guesthouse_filter) : ?>
+            <h3>Filtered Charges: $<?php echo number_format($filtered_price, 2); ?></h3>
+        <?php endif; ?>
         <form method="GET" class="mt-3">
             <div class="form-row">
                 <div class="form-group col-md-2">
@@ -132,33 +144,71 @@ while ($row_filtered = $result_filtered->fetch_assoc()) {
                 </div>
             </div>
         </form>
-        <table class="table table-striped mt-3" id="mealTable" style="display:none;">
-            <thead>
-                <tr>
-                    <th>Meal Date</th>
-                    <th>Meal Type</th>
-                    <th>Guesthouse</th>
-                    <th>Price</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php if (!empty($meals)): ?>
-                    <?php foreach ($meals as $meal): ?>
-                        <tr>
-                            <td><?php echo htmlspecialchars($meal['meal_date']); ?></td>
-                            <td><?php echo htmlspecialchars(ucfirst($meal['meal_type'])); ?></td>
-                            <td><?php echo $meal['guesthouse_id'] == 1 ? 'Satkar' : 'Swagat'; ?></td>
-                            <td><?php echo htmlspecialchars($meal['price']); ?></td>
-                        </tr>
-                    <?php endforeach; ?>
-                <?php else: ?>
+        <button class="btn btn-primary mt-3 " onclick="toggleTable()">Show History</button>
+        <button class="btn btn-success mt-3" onclick="exportTableToExcel('mealTable', 'meal_history')">Export as Excel File</button>
+        <div class="table-responsive">
+            <table class="table table-striped mt-3" id="mealTable" style="display:none;" style="background-color: white;">
+                <thead>
                     <tr>
-                        <td colspan="4">No meals found</td>
+                        <th>Meal Date</th>
+                        <th>Meal Type</th>
+                        <th>Guesthouse</th>
+                        <th>Price</th>
                     </tr>
-                <?php endif; ?>
-            </tbody>
-        </table>
-        <a href="adminPanel.php" class="btn btn-secondary mt-3">Back to Dashboard</a>
+                </thead>
+                <tbody>
+                    <?php if (!empty($meals)) : ?>
+                        <?php foreach ($meals as $meal) : ?>
+                            <tr>
+                                <td class="date-format"><?php echo date('d-F-Y', strtotime($meal['meal_date'])); ?></td>
+                                <td><?php echo htmlspecialchars(ucfirst($meal['meal_type'])); ?></td>
+                                <td><?php echo $meal['guesthouse_id'] == 1 ? 'Satkar' : 'Swagat'; ?></td>
+                                <td><?php echo htmlspecialchars($meal['price']); ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else : ?>
+                        <tr>
+                            <td colspan="4">No meals found</td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+        <a href="adminPanel.php" class="btn btn-secondary mt-3 mb-3">Back to Dashboard</a>
     </div>
+
+    <script>
+        function exportTableToExcel(tableID, filename = '') {
+            var downloadLink;
+            var dataType = 'application/vnd.ms-excel';
+            var tableSelect = document.getElementById(tableID);
+            var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
+
+            // Specify file name
+            filename = filename ? filename + '.xls' : 'excel_data.xls';
+
+            // Create download link element
+            downloadLink = document.createElement("a");
+
+            document.body.appendChild(downloadLink);
+
+            if (navigator.msSaveOrOpenBlob) {
+                var blob = new Blob(['\ufeff', tableHTML], {
+                    type: dataType
+                });
+                navigator.msSaveOrOpenBlob(blob, filename);
+            } else {
+                // Create a link to the file
+                downloadLink.href = 'data:' + dataType + ', ' + tableHTML;
+
+                // Setting the file name
+                downloadLink.download = filename;
+
+                //triggering the function
+                downloadLink.click();
+            }
+        }
+    </script>
 </body>
+
 </html>

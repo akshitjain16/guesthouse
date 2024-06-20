@@ -27,6 +27,7 @@ $user = $result->fetch_assoc();
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
+<div><?php include 'navbar.php'; ?></div>
     <div class="container">
         <h1 class="mt-5">Your Profile</h1>
         <table class="table table-striped mt-3">

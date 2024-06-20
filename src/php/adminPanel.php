@@ -180,7 +180,7 @@ unset($_SESSION['success']);
                             <option value="dinner">Dinner</option>
                         </select>
                     </div>
-                    <div class="form-group ">
+                    <div class="form-group col-md-2">
                         <label for="meal_date">Meal Date</label>
                         <input type="date" class="form-control" id="meal_date" name="meal_date" value="<?php echo $current_date; ?>" required>
                     </div>

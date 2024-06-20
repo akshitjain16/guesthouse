@@ -80,7 +80,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
                         <h3 class="card-title text-center">New User Registration</h3>
                         <form method="POST">
                             <div class="form-group">
-                                <label for="role">Select Role</label><br>
+                                <label for="role">Select Role<span class="required">*</span></label><br>
                                 <div class="form-check form-check-inline">
                                     <input type="radio" class="form-check-input" name="role" value="employee" required>
                                     <label class="form-check-label" for="employee">Employee</label>
@@ -96,7 +96,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
                             </div>
                             <div class="form-row">
                             <div class="form-group col-md-4">
-                                <label for="emp_id">Employee Code</label>
+                                <label for="emp_id">Employee Code<span class="required">*</span></label>
                                 <input type="number" class="form-control" id="emp_id" name="emp_id" required>
                             </div>
                             <div class="form-group col-md-4">
@@ -116,7 +116,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
                                 <input type="text" class="form-control" id="depname" name="depname">
                             </div>
                             <div class="form-group col-md-4">
-                                <label for="password">Password</label>
+                                <label for="password">Password<span class="required">*</span></label>
                                 <input type="password" class="form-control" id="password" name="password" required>
                             </div>
                             </div>

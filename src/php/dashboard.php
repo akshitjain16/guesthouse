@@ -34,10 +34,10 @@ $stmt_last_booked->execute();
 $result_last_booked = $stmt_last_booked->get_result();
 $last_booked = $result_last_booked->fetch_assoc()['last_booked_date'];
 
-// Fetch all prebooked meals
-$sql_prebooked = "SELECT meal_date, meal_type, guesthouse_id FROM meal_bookings WHERE user_id = ? ORDER BY meal_date";
+// Fetch all prebooked meals from today onwards
+$sql_prebooked = "SELECT meal_date, meal_type, guesthouse_id FROM meal_bookings WHERE user_id = ? AND meal_date >= ? ORDER BY meal_date";
 $stmt_prebooked = $conn->prepare($sql_prebooked);
-$stmt_prebooked->bind_param("i", $user_id);
+$stmt_prebooked->bind_param("is", $user_id, $today);
 $stmt_prebooked->execute();
 $result_prebooked = $stmt_prebooked->get_result();
 $prebooked_meals = [];
@@ -143,6 +143,11 @@ unset($_SESSION['success']);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Book Meals</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .highlight-today {
+            background-color: yellow;
+        }
+    </style>
     <script>
         function togglePrebookedMeals() {
             var prebookedMealsDiv = document.getElementById('prebookedMealsDiv');
@@ -168,12 +173,12 @@ unset($_SESSION['success']);
     </script>
 </head>
 
-<body  style="background-color:#DCDEDF">
+<body style="background-color:#DCDEDF">
     <div><?php include 'navbar.php'; ?></div>
     <div class="container">
         <h1 class="mt-5">Book Meals</h1>
         <form method="POST">
-            <div class="form-row ">
+            <div class="form-row">
                 <div class="form-group col-md-2">
                     <label for="meal_date_from">From Date</label>
                     <input type="date" class="form-control" id="meal_date_from" name="meal_date_from" min="<?php echo $today; ?>" required>
@@ -194,68 +199,69 @@ unset($_SESSION['success']);
                 <div class="form-group col-md-2">
                     <label for="guesthouse_id">Guest House</label>
                     <select class="form-control" id="guesthouse_id" name="guesthouse_id" required>
-                        <option value=1>Satkar</option>
-                        <option value=2>Swagat</option>
+                        <option value="1">Satkar</option>
+                        <option value="2">Swagat</option>
                     </select>
                 </div>
                 <div class="form-group col-md-4 align-self-end">
-                <button type="submit" name="book_meals" class="btn btn-primary">Book Meals</button>
+                    <button type="submit" name="book_meals" class="btn btn-primary">Book Meals</button>
                 </div>
             </div>
-    </form>
+        </form>
 
+        <?php if (!empty($error_message)) : ?>
+            <div class="alert alert-danger mt-3">
+                <?php echo $error_message; ?>
+            </div>
+        <?php endif; ?>
 
-    <?php if (!empty($error_message)) : ?>
-        <div class="alert alert-danger mt-3">
-            <?php echo $error_message; ?>
-        </div>
-    <?php endif; ?>
+        <?php if (!empty($success_message)) : ?>
+            <div class="alert alert-success mt-3">
+                <?php echo $success_message; ?>
+            </div>
+        <?php endif; ?>
 
-    <?php if (!empty($success_message)) : ?>
-        <div class="alert alert-success mt-3">
-            <?php echo $success_message; ?>
-        </div>
-    <?php endif; ?>
+        <button class="btn btn-info" onclick="togglePrebookedMeals()">Show bookings</button>
 
-    <button class="btn btn-info" onclick="togglePrebookedMeals()">Show bookings</button>
-
-    <div id="prebookedMealsDiv" style="display: none;">
-        <h3 class="mt-3" style="text-align:center">Booked Meals</h3>
-        <div class="form-group col-md-3">
-            <label for="filter_guesthouse">Filter by Guest House</label>
-            <select class="form-control" id="filter_guesthouse" onchange="filterBookings()">
-                <option value="">All</option>
-                <option value="1">Satkar</option>
-                <option value="2">Swagat</option>
-            </select>
-        </div>
-        <table class="table table-striped mt-3" id="prebookedMealsTable">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Meal Types</th>
-                    <th>Guest House</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php if (count($combined_meals) > 0) : ?>
-                    <?php foreach ($combined_meals as $guesthouse => $meals_by_date) : ?>
-                        <?php foreach ($meals_by_date as $date => $meals) : ?>
-                            <tr data-guesthouse="<?php echo $guesthouse; ?>">
-                                <td><?php echo htmlspecialchars($date); ?></td>
-                                <td><?php echo htmlspecialchars(implode(', ', $meals)); ?></td>
-                                <td><?php echo $guesthouse == 1 ? 'Satkar' : 'Swagat'; ?></td>
-                            </tr>
-                        <?php endforeach; ?>
-                    <?php endforeach; ?>
-                <?php else : ?>
+        <div id="prebookedMealsDiv" style="display: none;">
+            <h3 class="mt-3" style="text-align:center">Booked Meals</h3>
+            <div class="form-group col-md-3">
+                <label for="filter_guesthouse">Filter by Guest House</label>
+                <select class="form-control" id="filter_guesthouse" onchange="filterBookings()">
+                    <option value="">All</option>
+                    <option value="1">Satkar</option>
+                    <option value="2">Swagat</option>
+                </select>
+            </div>
+            <div class="table-responsive">
+            <table class="table table-striped mt-3" id="prebookedMealsTable" style="background-color:white">
+                <thead>
                     <tr>
-                        <td colspan="3">No booked meals found</td>
+                        <th>Date</th>
+                        <th>Meal Types</th>
+                        <th>Guest House</th>
                     </tr>
-                <?php endif; ?>
-            </tbody>
-        </table>
-    </div>
+                </thead>
+                <tbody>
+                    <?php if (count($combined_meals) > 0) : ?>
+                        <?php foreach ($combined_meals as $guesthouse => $meals_by_date) : ?>
+                            <?php foreach ($meals_by_date as $date => $meals) : ?>
+                                <tr data-guesthouse="<?php echo $guesthouse; ?>" class="<?php echo $date == $today ? 'highlight-today' : ''; ?>">
+                                    <td><?php echo date('d-F-Y', strtotime($date)); ?></td>
+                                    <td><?php echo htmlspecialchars(implode(', ', $meals)); ?></td>
+                                    <td><?php echo $guesthouse == 1 ? 'Satkar' : 'Swagat'; ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php endforeach; ?>
+                    <?php else : ?>
+                        <tr>
+                            <td colspan="3">No booked meals found</td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+            </div>
+        </div>
     </div>
 </body>
 

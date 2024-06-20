@@ -114,11 +114,11 @@ unset($_SESSION['success']);
                     </select>
                 </div>
                 <div class="form-group col-md-3">
-                    <label for="item_name">Item Name</label>
+                    <label for="item_name">Item Name<span class="required">*</span></label>
                     <input type="text" class="form-control" id="item_name" name="item_name" required>
                 </div>
                 <div class="form-group col-md-3">
-                    <label for="price">Price</label>
+                    <label for="price">Price<span class="required">*</span></label>
                     <input type="number" step="0.01" class="form-control" id="price" name="price" required>
                 </div>
             </div>
@@ -132,7 +132,7 @@ unset($_SESSION['success']);
         <?php endif; ?>
 
         <h2 class="mt-5">Existing Menu Items</h2>
-        <table class="table table-striped mt-3">
+        <table class="table table-striped mt-3" style="background-color: white;">
             <thead>
                 <tr>
                     <th>Meal Type</th>
