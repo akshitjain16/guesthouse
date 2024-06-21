@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to Shree Guest House</title>
+    <title>Home</title>
     <style>
         body, html {
             margin: 0;

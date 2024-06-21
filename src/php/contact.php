@@ -4,31 +4,35 @@ include '../../config/config.php';
 $error_message = '';
 $success_message = '';
 
+// Guesthouse email mapping
+$guesthouse_emails = [
+    'Swagat' => 'guesthouse1@example.com',
+    'Satakr' => 'guesthouse2@example.com',
+];
+
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $name = $_POST['name'];
     $email = $_POST['email'];
     $subject = $_POST['subject'];
     $message = $_POST['message'];
+    $guesthouse = $_POST['guesthouse'];
 
     // Validate inputs
-    if (empty($name) || empty($email) || empty($subject) || empty($message)) {
+    if (empty($name) || empty($email) || empty($subject) || empty($message) || empty($guesthouse)) {
         $error_message = 'All fields are required.';
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $error_message = 'Invalid email format.';
     } else {
-        // Insert into database or send email
-        // Example: Insert into database
-        $stmt = $conn->prepare("INSERT INTO contact_messages (name, email, subject, message) VALUES (?, ?, ?, ?)");
-        $stmt->bind_param("ssss", $name, $email, $subject, $message);
+        $to_email = $guesthouse_emails[$guesthouse];
 
-        if ($stmt->execute()) {
+        // Send email (Example)
+        $headers = "From: $email";
+        if (mail($to_email, $subject, $message, $headers)) {
             $success_message = 'Your message has been sent successfully!';
         } else {
             $error_message = 'Failed to send your message. Please try again later.';
         }
-
-        $stmt->close();
     }
 }
 ?>
@@ -75,22 +79,31 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <?php endif; ?>
                         <form method="POST" action="">
                             <div class="form-row">
-                                <div class="form-group col-md-4">
+                                <div class="form-group col-md-6">
                                     <label for="name">Name</label>
                                     <input type="text" class="form-control" id="name" name="name" required>
                                 </div>
-                                <div class="form-group col-md-4">
+                                <div class="form-group col-md-6">
                                     <label for="email">Email</label>
                                     <input type="email" class="form-control" id="email" name="email" required>
                                 </div>
-                                <div class="form-group col-md-4">
-                                    <label for="subject">Subject</label>
-                                    <input type="text" class="form-control" id="subject" name="subject" required>
-                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="subject">Subject</label>
+                                <input type="text" class="form-control" id="subject" name="subject" required>
                             </div>
                             <div class="form-group">
                                 <label for="message">Message</label>
                                 <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Guesthouse</label><br>
+                                <?php foreach ($guesthouse_emails as $guesthouse => $email) : ?>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="guesthouse" id="<?php echo $guesthouse; ?>" value="<?php echo $guesthouse; ?>" required>
+                                        <label class="form-check-label" for="<?php echo $guesthouse; ?>"><?php echo $guesthouse; ?></label>
+                                    </div>
+                                <?php endforeach; ?>
                             </div>
                             <button type="submit" class="btn btn-primary">Send Message</button>
                         </form>
@@ -100,8 +113,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </div>
     </div>
     </div>
-    
+
 </body>
-<?php include'footer.php'; ?>
+<?php include 'footer.php'; ?>
 
 </html>
