@@ -121,7 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book_meals'])) {
             $start_date->modify('+1 day');
         }
         $_SESSION['success'] = "Meals booked successfully and an confirmation message has been sent successfully.";
-        header("Location: dashboard.php");
+        header("Location: " . $_SERVER['REQUEST_URI']);
         exit();
     }
 }
@@ -263,6 +263,15 @@ unset($_SESSION['success']);
             </div>
         </div>
     </div>
+    <script>
+        // Remove success message after 3 seconds
+        setTimeout(function() {
+            let alertSuccess = document.querySelector('.alert');
+            if (alertSuccess) {
+                alertSuccess.style.display = 'none';
+            }
+        }, 3000);
+    </script>
 </body>
 
 </html>

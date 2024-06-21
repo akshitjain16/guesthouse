@@ -127,7 +127,7 @@ foreach ($bookings as $booking) {
             <div class="form-group align-self-end">
                 <button type="submit" class="btn btn-primary">Apply Filters</button>
                 <a href="view_bookings.php?emp_id=<?php echo $emp_id_filter; ?>" class="btn btn-secondary ml-2">Remove</a>
-                <a class="btn btn-success ml-2">Export</a>
+                <a class="btn btn-success ml-2" onclick="exportTableToExcel('mealTable', 'Bookings')">Export</a>
             </div>
         </form>
 
@@ -148,36 +148,69 @@ foreach ($bookings as $booking) {
         </div>
 
         <div class="table-responsive">
-        <table class="table table-striped mt-3" style="background-color: white;">
-            <thead>
-                <tr>
-                    <th>Employee Code</th>
-                    <th>Employee Name</th>
-                    <th>Meal Date</th>
-                    <th>Meal Type</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php if (count($bookings) > 0) : ?>
-                    <?php foreach ($bookings as $booking) : ?>
-                        <tr>
-                            <td><?php echo htmlspecialchars($booking['user_id']); ?></td>
-                            <td><?php echo htmlspecialchars($booking['name']); ?></td>
-                            <td><?php echo date('d-F-Y', strtotime($booking['meal_date'])); ?></td>
-                            <td><?php echo htmlspecialchars($booking['meal_type']); ?></td>
-                        </tr>
-                    <?php endforeach; ?>
-                <?php else : ?>
+            <table class="table table-striped mt-3" id="mealTable" style="background-color: white;">
+                <thead>
                     <tr>
-                        <td colspan="4">No bookings found for this date range.</td>
+                        <th>Employee Code</th>
+                        <th>Employee Name</th>
+                        <th>Meal Date</th>
+                        <th>Meal Type</th>
                     </tr>
-                <?php endif; ?>
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    <?php if (count($bookings) > 0) : ?>
+                        <?php foreach ($bookings as $booking) : ?>
+                            <tr>
+                                <td><?php echo htmlspecialchars($booking['user_id']); ?></td>
+                                <td><?php echo htmlspecialchars($booking['name']); ?></td>
+                                <td><?php echo date('d-F-Y', strtotime($booking['meal_date'])); ?></td>
+                                <td><?php echo htmlspecialchars($booking['meal_type']); ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else : ?>
+                        <tr>
+                            <td colspan="4">No bookings found for this date range.</td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
         </div>
 
         <a href="dashboard.php" class="btn btn-secondary mt-3 mb-3">Back to Dashboard</a>
     </div>
+
+    <script>
+        function exportTableToExcel(tableID, filename = '') {
+            var downloadLink;
+            var dataType = 'application/vnd.ms-excel';
+            var tableSelect = document.getElementById(tableID);
+            var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
+
+            // Specify file name
+            filename = filename ? filename + '.xls' : 'excel_data.xls';
+
+            // Create download link element
+            downloadLink = document.createElement("a");
+
+            document.body.appendChild(downloadLink);
+
+            if (navigator.msSaveOrOpenBlob) {
+                var blob = new Blob(['\ufeff', tableHTML], {
+                    type: dataType
+                });
+                navigator.msSaveOrOpenBlob(blob, filename);
+            } else {
+                // Create a link to the file
+                downloadLink.href = 'data:' + dataType + ', ' + tableHTML;
+
+                // Setting the file name
+                downloadLink.download = filename;
+
+                //triggering the function
+                downloadLink.click();
+            }
+        }
+    </script>
 </body>
 
 </html>

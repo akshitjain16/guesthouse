@@ -95,6 +95,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $booking_exists = true;  // Assuming booking was successful
             $user_exists = true;
             $_SESSION['success'] = "Check-in status updated successfully!";
+            header("Location: " . $_SERVER['REQUEST_URI']);
+            exit();
         } else {
             $user_exists = false;
         }
@@ -225,6 +227,15 @@ unset($_SESSION['success']);
             <?php endif; ?>
         </div>
     </div>
+    <script>
+        // Remove success message after 3 seconds
+        setTimeout(function() {
+            let alert = document.querySelector('.alert');
+            if (alert) {
+                alert.style.display = 'none';
+            }
+        }, 3000);
+    </script>
 </body>
 
 </html>

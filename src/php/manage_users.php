@@ -51,24 +51,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['edit_id'])) {
 
 // Fetch all users and their total payments for the current month from the database
 $search_emp_id = $_GET['search_emp_id'] ?? '';
-$search_query = $search_emp_id ? "AND u.emp_id = ?" : "";
 $current_month_start = date('Y-m-01');
 $current_month_end = date('Y-m-t');
+
+// Dynamically construct the SQL query based on the search term
 $sql = "SELECT u.*, IFNULL(SUM(mb.price), 0) AS total_payment
         FROM users u
         LEFT JOIN meal_bookings mb ON u.emp_id = mb.user_id AND mb.guesthouse_id = ?
-        WHERE u.role = 'employee' AND u.status = 'true' $search_query
-        AND mb.meal_date BETWEEN ? AND ?
-        GROUP BY u.emp_id";
-$stmt = $conn->prepare($sql);
-
-$params = array($guesthouse_id, $current_month_start, $current_month_end);
+        WHERE u.role = 'employee' AND u.status = 'true'";
 
 if ($search_emp_id) {
-    $params[] = $search_emp_id;
+    $sql .= " AND u.emp_id = ?";
 }
 
-$stmt->bind_param(str_repeat('s', count($params)), ...$params);
+$sql .= " AND mb.meal_date BETWEEN ? AND ?
+          GROUP BY u.emp_id";
+
+$stmt = $conn->prepare($sql);
+
+// Bind parameters dynamically
+if ($search_emp_id) {
+    $stmt->bind_param("isss", $guesthouse_id, $search_emp_id, $current_month_start, $current_month_end);
+} else {
+    $stmt->bind_param("iss", $guesthouse_id, $current_month_start, $current_month_end);
+}
 
 $stmt->execute();
 $result = $stmt->get_result();
@@ -119,7 +125,7 @@ $result = $stmt->get_result();
                                 <td><?php echo htmlspecialchars($row['name']); ?></td>
                                 <td><?php echo htmlspecialchars($row['email']); ?></td>
                                 <td><?php echo htmlspecialchars($row['phone_number']); ?></td>
-                                <td><?php echo htmlspecialchars(number_format($row['total_payment'], 2)); ?></td>
+                                <td><?php echo htmlspecialchars(number_format($row['total_payment'], 2)); ?> Rs.</td>
                                 <td>
                                     <a href="view_bookings.php?emp_id=<?php echo $row['emp_id']; ?>" class="btn btn-sm btn-secondary">View</a>
                                     <a href="manage_users.php?edit_id=<?php echo $row['emp_id']; ?>" class="btn btn-primary btn-sm">Edit</a>
@@ -135,7 +141,7 @@ $result = $stmt->get_result();
                 </tbody>
             </table>
         </div>
-        <a href="adminPanel.php" class="btn btn-secondary mt-3 mb-3">Back to Admin Panel</a>
+        <a href="adminPanel.php" class="btn btn-secondary mt-3 mb-3">Back to Dashboard</a>
     </div>
 
     <?php
@@ -153,22 +159,22 @@ $result = $stmt->get_result();
             <h2>Edit Employee</h2>
             <form method="POST" action="manage_users.php">
                 <div class="form-row mb-5">
-                <input type="hidden" name="edit_id" value="<?php echo $user['emp_id']; ?>">
-                <div class="form-group col-md-2">
-                    <label for="name">Full Name</label>
-                    <input type="text" name="name" class="form-control" value="<?php echo htmlspecialchars($user['name']); ?>" required>
-                </div>
-                <div class="form-group col-md-2">
-                    <label for="email">Email-ID</label>
-                    <input type="email" name="email" class="form-control" value="<?php echo htmlspecialchars($user['email']); ?>">
-                </div>
-                <div class="form-group col-md-2">
-                    <label for="phone_number">Phone Number</label>
-                    <input type="text" name="phone_number" class="form-control" value="<?php echo htmlspecialchars($user['phone_number']); ?>">
-                </div>
-                <div class="form-group col-md-3 align-self-end">
-                <button type="submit" class="btn btn-primary">Update</button>
-                </div>
+                    <input type="hidden" name="edit_id" value="<?php echo $user['emp_id']; ?>">
+                    <div class="form-group col-md-2">
+                        <label for="name">Full Name</label>
+                        <input type="text" name="name" class="form-control" value="<?php echo htmlspecialchars($user['name']); ?>" required>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="email">Email-ID</label>
+                        <input type="email" name="email" class="form-control" value="<?php echo htmlspecialchars($user['email']); ?>">
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="phone_number">Phone Number</label>
+                        <input type="text" name="phone_number" class="form-control" value="<?php echo htmlspecialchars($user['phone_number']); ?>">
+                    </div>
+                    <div class="form-group col-md-3 align-self-end">
+                        <button type="submit" class="btn btn-primary">Update</button>
+                    </div>
                 </div>
             </form>
         </div>

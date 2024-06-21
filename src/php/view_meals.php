@@ -107,7 +107,7 @@ while ($row_filtered = $result_filtered->fetch_assoc()) {
     <div><?php include 'navbar.php'; ?></div>
     <div class="container">
         <h1 class="mt-5 ">Your Meal History</h1>
-        <h3 class="mt-4 total-payment">Total Charges for Current Month: $<?php echo number_format($total_price, 2); ?></h3>
+        <h3 class="mt-4 total-payment">Total Charges for Current Month: <?php echo number_format($total_price, 2); ?> Rs.</h3>
         <?php if ($from_date || $to_date || $meal_type_filter || $guesthouse_filter) : ?>
             <h3>Filtered Charges: $<?php echo number_format($filtered_price, 2); ?></h3>
         <?php endif; ?>
@@ -163,7 +163,7 @@ while ($row_filtered = $result_filtered->fetch_assoc()) {
                                 <td class="date-format"><?php echo date('d-F-Y', strtotime($meal['meal_date'])); ?></td>
                                 <td><?php echo htmlspecialchars(ucfirst($meal['meal_type'])); ?></td>
                                 <td><?php echo $meal['guesthouse_id'] == 1 ? 'Satkar' : 'Swagat'; ?></td>
-                                <td><?php echo htmlspecialchars($meal['price']); ?></td>
+                                <td><?php echo htmlspecialchars($meal['price']); ?> Rs.</td>
                             </tr>
                         <?php endforeach; ?>
                     <?php else : ?>

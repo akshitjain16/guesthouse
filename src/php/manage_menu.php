@@ -148,7 +148,7 @@ unset($_SESSION['success']);
                             <td><?php echo htmlspecialchars($menu_item['meal_type']); ?></td>
                             <td><?php echo htmlspecialchars($menu_item['weekday']); ?></td>
                             <td><?php echo htmlspecialchars($menu_item['item_name']); ?></td>
-                            <td><?php echo htmlspecialchars($menu_item['price']); ?></td>
+                            <td><?php echo htmlspecialchars($menu_item['price']); ?> Rs.</td>
                         </tr>
                     <?php endforeach; ?>
                 <?php else: ?>
@@ -168,8 +168,8 @@ unset($_SESSION['success']);
     <script>
         // Remove success message after 3 seconds
         setTimeout(function() {
-            let alertSuccess = document.querySelector('.alert-success');
-            if (alertSuccess) {
+            let alert = document.querySelector('.alert');
+            if (alert) {
                 alertSuccess.style.display = 'none';
             }
         }, 3000);
