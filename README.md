@@ -53,3 +53,67 @@ The Guest House Management System is a web application designed to streamline th
    If using XAMPP, place the project folder in the htdocs directory.
    Start Apache and MySQL from the XAMPP control panel.
    Access the application at http://localhost/guesthouse/.
+
+### Database Schema
+Tables
+users:
+
+emp_id (INT, PRIMARY KEY)
+name (VARCHAR)
+email (VARCHAR)
+phone_number (VARCHAR)
+password (VARCHAR)
+role (ENUM: 'admin', 'employee')
+guesthouse_id (INT, FOREIGN KEY)
+guesthouses:
+
+id (INT, PRIMARY KEY)
+name (VARCHAR)
+admin_id (INT, FOREIGN KEY)
+meal_bookings:
+
+id (INT, PRIMARY KEY)
+user_id (INT, FOREIGN KEY)
+guesthouse_id (INT, FOREIGN KEY)
+meal_date (DATE)
+meal_type (ENUM)
+price (DECIMAL)
+menus:
+
+id (INT, PRIMARY KEY)
+meal_type (ENUM)
+day (ENUM)
+price (DECIMAL)
+Usage
+User Roles
+Admin: Can manage users, view and manage bookings, and manage menus.
+Employee: Can book meals and view their booking history.
+Booking Meals
+Login as an employee.
+Navigate to the "Book Meals" page.
+Select the meal type and date.
+Click "Book" to confirm the booking.
+Managing Users (Admin)
+Login as an admin.
+Navigate to the "Manage Users" page.
+Add, edit, or delete users as needed.
+Viewing Bookings (Admin)
+Login as an admin.
+Navigate to the "View Bookings" page.
+Select the guesthouse to view bookings.
+Screenshots
+(Add screenshots of your application here)
+
+Contributing
+Fork the repository.
+Create a new branch (git checkout -b feature-branch).
+Commit your changes (git commit -m 'Add some feature').
+Push to the branch (git push origin feature-branch).
+Open a Pull Request.
+
+File Structure
+config/: Contains configuration files.
+includes/: Includes reusable PHP components like header, footer, and navbar.
+public/: Publicly accessible files including HTML, CSS, and JavaScript files.
+admin/: Contains the admin panel files for managing users.
+index.php: The main entry point for the application.
