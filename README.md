@@ -54,9 +54,9 @@ The Guest House Management System is a web application designed to streamline th
    Start Apache and MySQL from the XAMPP control panel.
    Access the application at http://localhost/guesthouse/.
 
-### Database Schema
+## Database Schema
 
-#### Tables
+### Tables
 
 **users:**
 - emp_id (INT, PRIMARY KEY)
