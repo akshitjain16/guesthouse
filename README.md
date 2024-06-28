@@ -10,7 +10,7 @@
 - [Usage](#usage)
 - [Screenshots](#screenshots)
 - [Contributing](#contributing)
-- [License](#license)
+- [File Structure](#file-structure)
 
 ## Introduction
 
