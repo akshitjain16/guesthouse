@@ -19,10 +19,10 @@ The Guest House Management System is a web application designed to streamline th
 ## Features
 
 - **User Authentication**: Login and registration system.
-- **Admin Panel**: Manage users, bookings, and menus.
-- **Meal Booking**: Users can book meals and view their booking history and Payments.
+- **Admin Panel**: Manage users, bookings, menus, and search for users by employee code.
+- **Meal Booking**: Users can book meals and view their booking history and monthly charges.
 - **Role-Based Access Control**: Different views and access levels for admins and employees.
-- **Guesthouse Management**: Admins can only access data related to their specific guesthouse.
+- **Guesthouse Management**: Admins can only access data related to their specific guesthouse - Edit user details and Soft delete user accounts.
 
 ## Technologies Used
 
@@ -42,5 +42,14 @@ The Guest House Management System is a web application designed to streamline th
 
 1. Clone the repository:
    ```sh
-   git clone https://github.com/yourusername/guest-house-management.git
-   cd guest-house-management
+   git clone https://github.com/akshitjain16/guesthouse
+   cd guesthouse
+
+2. Configure the database:
+   Import the guest_house.sql file into your MySQL database.
+   Update the database configuration in config/config.php with your database credentials.
+
+3. Start the web server:
+   If using XAMPP, place the project folder in the htdocs directory.
+   Start Apache and MySQL from the XAMPP control panel.
+   Access the application at http://localhost/guesthouse/.
