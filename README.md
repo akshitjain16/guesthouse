@@ -72,11 +72,13 @@ The Guest House Management System is a web application designed to streamline th
 - password (VARCHAR)
 - role (ENUM: 'admin', 'employee')
 - guesthouse_id (INT, FOREIGN KEY)
+- Department_name (VARCHAR)
+- status (ENUM: 'true', 'false')
 
 **guesthouses:**
 - id (INT, PRIMARY KEY)
 - name (VARCHAR)
-- admin_id (INT, FOREIGN KEY)
+- guesthouse_id (INT, FOREIGN KEY)
 
 **meal_bookings:**
 - id (INT, PRIMARY KEY)
@@ -88,8 +90,10 @@ The Guest House Management System is a web application designed to streamline th
 
 **menus:**
 - id (INT, PRIMARY KEY)
+- guesthouse_id (INT, FOREIGN KEY)
 - meal_type (ENUM)
-- day (ENUM)
+- weekday (ENUM)
+- item_name (VARCHAR)
 - price (DECIMAL)
 
 ## Usage
@@ -97,7 +101,7 @@ The Guest House Management System is a web application designed to streamline th
 ### User Roles
 
 - **Admin**: Can manage users, view and manage bookings, and manage menus.
-- **Employee**: Can book meals and view their booking history.
+- **Employee**: Can book meals, view their booking history and monthly charges.
 
 
 ### Booking Meals
@@ -136,6 +140,6 @@ The Guest House Management System is a web application designed to streamline th
 ## File Structure
 
 - `config/`: Contains configuration files.
-- `src/php/`: Includes reusable PHP components like header, footer, and navbar.
-- `public/`: Publicly accessible files including HTML, CSS, and JavaScript files.
+- `src/php/`: Includes reusable PHP components with HTML, CSS, and JavaScript files.
+- `public/assets/`: Publicly accessible files including images, videos.
 - `index.php`: The main entry point for the application.
