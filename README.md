@@ -1,4 +1,4 @@
-# Guest House Management System
+# GuestHouse Management System
 
 ## Table of Contents
 
@@ -12,9 +12,11 @@
 - [Contributing](#contributing)
 - [File Structure](#file-structure)
 
+
 ## Introduction
 
 The Guest House Management System is a web application designed to streamline the management of guesthouses. It includes features for booking meals, managing users, and handling different guesthouses with admin and employee roles.
+
 
 ## Features
 
@@ -24,11 +26,13 @@ The Guest House Management System is a web application designed to streamline th
 - **Role-Based Access Control**: Different views and access levels for admins and employees.
 - **Guesthouse Management**: Admins can only access data related to their specific guesthouse - Edit user details and Soft delete user accounts.
 
+
 ## Technologies Used
 
 - **Frontend**: HTML, CSS, Bootstrap, JavaScript
 - **Backend**: PHP
 - **Database**: MySQL
+
 
 ## Installation
 
@@ -37,6 +41,7 @@ The Guest House Management System is a web application designed to streamline th
 - PHP >= 7.4
 - MySQL
 - Apache or any other web server
+
 
 ### Steps
 
@@ -53,6 +58,7 @@ The Guest House Management System is a web application designed to streamline th
    If using XAMPP, place the project folder in the htdocs directory.
    Start Apache and MySQL from the XAMPP control panel.
    Access the application at http://localhost/guesthouse/.
+
 
 ## Database Schema
 
@@ -93,6 +99,7 @@ The Guest House Management System is a web application designed to streamline th
 - **Admin**: Can manage users, view and manage bookings, and manage menus.
 - **Employee**: Can book meals and view their booking history.
 
+
 ### Booking Meals
 
 1. Login as an employee.
@@ -113,6 +120,7 @@ The Guest House Management System is a web application designed to streamline th
 3. Select the guesthouse to view bookings and see a list of users, their details, and monthly charges..
 4. Search for users by entering their employee code in the search bar.
 
+
 ## Screenshots
 
 
@@ -123,6 +131,7 @@ The Guest House Management System is a web application designed to streamline th
 3. Commit your changes (`git commit -m 'Add some feature'`).
 4. Push to the branch (`git push origin feature-branch`).
 5. Open a Pull Request.
+
 
 ## File Structure
 
