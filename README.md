@@ -61,7 +61,10 @@ The Guest House Management System is a web application designed to streamline th
 
 
 ## Database Schema
+   You can directly download this csv and import this schema file into your phpmyadmin database.
+   [guest_house.csv](https://github.com/user-attachments/files/16362196/guest_house.csv)
 
+   
 ### Tables
 
 **users:**
